@@ -1,0 +1,36 @@
+nav .navbar-brand
+{
+    /* size for brand */
+    font-size: xx-large;
+    color: #ea433b;
+}
+
+/* colors for band */
+nav .navbar-brand .black
+{
+    color: #000000;
+}
+nav .navbar-brand .red
+{
+    color: #ea433b;
+}
+
+nav .nav-item
+{
+    color: white;
+}
+
+main
+{
+    /* scroll horizontally as needed */
+    overflow-x: auto;
+
+    /* center contents */
+    text-align: center;
+}
+
+main img
+{
+    /* constrain images on small screens */
+    max-width: 100%;
+}

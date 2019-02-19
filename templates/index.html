@@ -1,1 +1,23 @@
-Hello, World
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    <font id="err" color="#ea433b"></font>
+    <font id="suc" color="#4caf50"></font>
+    <font id="test"></font>
+    <br><br>
+    <button type="button" class="btn btn-outline-danger btn-lg" id="clickButton" onclick="clickFunction(1)">Click</button>
+
+    <br>
+    Clicks : <span id="number">0</span>
+    <br>
+    <br>
+    <button type="button" class="btn btn-outline-secondary" id="autoclickButton" onclick="buyAutoclick(1)">Buy Auto Clicker</button>
+    <br>
+    Cost for new Auto Clicker : <span id="autocost">10</span>
+    <br>
+    Current Auto Clickers : <span id="autoclick">0</span>
+{% endblock %}
