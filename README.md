@@ -1,2 +1,3 @@
-# Click / Tap game
-Current goal : Create a Clicker game Web App.
+## Click / Tap game
+#Current goal : 
+Create a Clicker game Web App.
