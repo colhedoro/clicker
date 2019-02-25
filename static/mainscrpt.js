@@ -1,13 +1,23 @@
-
 ////////// PROPERTIES/VARIABLES //////////
+var virusName = "",
 
-var clicks = 0;
-var autoclick = 0;
+infected = {
+	name:'infected',
+	total:0,
+	increment:1,
+	replichance:0.1
+},
+
+replication = {
+	name:'replication',
+	total:0,
+},
 
 // Container of all properties.
-var properties = {
-    clicks: clicks,
-    autoclick: autoclick
+properties = {
+    virusName: virusName,
+    infected: infected,
+    replication: replication
 };
 
 // Gap between each time the game loop is fired...
@@ -16,33 +26,20 @@ var refresh = 666;
 var msg = setTimeout(function(){}, 0);
 
 ////////// CLICK AND BUY FUNCTIONS //////////
-
-function clickFunction(number) {
-    clicks += number;
-    document.getElementById("number").innerHTML = format(clicks);
-}
-
-function buyAutoclick(number){
-    var cost = Math.floor(10 * Math.pow(1.1,autoclick));
-    if (clicks >= cost){
-        autoclick += number;
-        clicks -= cost;
-        document.getElementById("autoclick").innerHTML = format(autoclick);
-        document.getElementById("number").innerHTML = format(clicks);
-    }
-    var nextCost = Math.floor(10 * Math.pow(1.1,autoclick));
-    document.getElementById("autocost").innerHTML = format(nextCost);
-
+function infect(){
+    infected.total += infected.increment;
+    randomchance();
+    update();
 }
 
 ////////// SAVE LOAD //////////
-
 function save(){
     try{
         // Update properties object with all current values
         properties = {
-            clicks: clicks,
-            autoclick: autoclick
+            virusName: virusName,
+            infected: infected,
+            replication: replication
         };
         clearmsg();
 
@@ -54,6 +51,7 @@ function save(){
     catch(err){
         clearmsg();
         document.getElementById("err").innerHTML = "Save failed";
+        console.log(err);
         msg = setTimeout(function(){document.getElementById("err").innerHTML = ""}, 1000);
     }
 }
@@ -65,11 +63,14 @@ function load(){
         var savegame = JSON.parse(localStorage.getItem("save"));
 
         // Cycle through each property, checking that it exists in the save game, and if it is, loading it.
-        if (typeof savegame.clicks !== "undefined"){
-            clicks = savegame.clicks
+        if (typeof savegame.virusName !== "undefined"){
+            virusName = savegame.virusName
         }
-        if (typeof savegame.autoclick !== "undefined") {
-            autoclick = savegame.autoclick;
+        if (typeof savegame.infected !== "undefined"){
+            infected = savegame.infected
+        }
+        if (typeof savegame.replication !== "undefined") {
+            replication = savegame.replication;
         }
 
         // Confirmation message
@@ -77,12 +78,11 @@ function load(){
         document.getElementById("suc").innerHTML = "Load successful";
         msg = setTimeout(function(){document.getElementById("suc").innerHTML = ""}, 1000);
 
-        // Update display
-        clickFunction(0);
-        buyAutoclick(0);
+        update();
     }
     catch(err){
         clearmsg();
+        console.log(err);
         document.getElementById("err").innerHTML= "Unable to load savegame";
         msg = setTimeout(function(){document.getElementById("err").innerHTML = ""}, 1000);
     }
@@ -103,6 +103,32 @@ function deleteSave(){
 }
 
 ////////// HELPER FUNCTIONS //////////
+
+// Update display. Update this function for each added property
+function update() {
+    document.getElementById('virusName').innerHTML = virusName;
+    document.getElementById("infected").innerHTML = format(infected.total);
+    document.getElementById("replication").innerHTML = format(replication.total);
+}
+
+// Prompts player to name the Virus.
+function nameVirus(){
+    virusName = randomName();
+	var n = prompt('Please name your Virus',virusName);
+	if (n != null){
+		virusName = n;
+		update();
+    }
+    else nameVirus();
+}
+
+// Random chance (for Replications)
+function randomchance(){
+    var ran = Math.random();
+    if (ran < infected.replichance){
+        replication.total += infected.increment;
+    }
+}
 
 // Put commas in large numbers (e.g 1,000,000)
 function format(text) {
@@ -125,9 +151,31 @@ function clearmsg() {
     document.getElementById("err").innerHTML = "";
 }
 
+// Autoload on page refresh
+document.addEventListener("DOMContentLoaded", function(){
+    var savedgame = JSON.parse(localStorage.getItem("save"));
+    try {
+        if (typeof savedgame.infected !== "undefined"){
+        load()
+        console.log("Loaded save game from LocalStorage")
+        }
+    }
+    catch(err){
+        console.log("No save game to load")
+        nameVirus();
+    }
+});
+
+// Random name generator
+function randomName(){
+    var examples = ["Bird Flu","Common Cold","Ebola","Encephalitis","Gastroenteritis","Hepatitis","Human Immunodeficiency Virus","Influenza","Meningitis",
+                    "Mumps","Poliomyelitis","Poliovirus","Rabies","Rabies","Rubella","Shingles","Smallpox","Swine Flu","t-Virus","Zika virus"];
+    var res = Math.floor(Math.random() * examples.length);
+    return examples[res];
+}
+
 
 ///// GAME LOOP /////
 window.setInterval(function(){
-    var increase = autoclick * 1.2;
-    clickFunction(increase);
+
 }, refresh);

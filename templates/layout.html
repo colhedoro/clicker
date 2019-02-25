@@ -25,7 +25,7 @@
     <body>
 
         <nav class="navbar navbar-expand-md navbar-light bg-dark border">
-            <a class="navbar-brand" href="/"><img src="/static/icon.png" alt="Incremental" height="38" width="38"><span class="red"> Incremental</span></a>
+            <a class="navbar-brand" href="/"><img src="/static/icon.png" alt="IncreDemic" height="38" width="38"><span class="red"> IncreDemic : </span><span class ="white" id="virusName"></span></a>
             <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -34,9 +34,10 @@
 
                 </ul>
                 <ul class="navbar-nav ml-auto mt-2">
+                    <li class="nav-item"><span id="rename" onclick="nameVirus()"><a class="nav-link" href="#"><font color="white">Rename</font></a></span></li>
                     <li class="nav-item"><span id="save" onclick="save()"><a class="nav-link" href="#"><font color="white">Save</font></a></span></li>
-                    <li class="nav-item"><span id="save" onclick="load()"><a class="nav-link" href="#"><font color="white">Load</font></a></span></li>
-                    <li class="nav-item"><span id="save" onclick="deleteSave()"><a class="nav-link" href="#"><font color="white">Delete Save</font></a></span></li>
+                    <li class="nav-item"><span id="load" onclick="load()"><a class="nav-link" href="#"><font color="white">Load</font></a></span></li>
+                    <li class="nav-item"><span id="del" onclick="deleteSave()"><a class="nav-link" href="#"><font color="white">Delete Save</font></a></span></li>
                 </ul>
             </div>
         </nav>
@@ -48,9 +49,6 @@
         <footer class="small text-center text-muted">
             <span id="timedisplay"></span>
         </footer>
-
-        <script src="/static/mainscript.js">
-        </script>
 
     </body>
 

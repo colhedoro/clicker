@@ -1,23 +1,42 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Incremental
+    IncreDemic
 {% endblock %}
 
 {% block main %}
     <font id="err" color="#ea433b"></font>
     <font id="suc" color="#4caf50"></font>
     <font id="test"></font>
-    <br><br>
-    <button type="button" class="btn btn-outline-danger btn-lg" id="clickButton" onclick="clickFunction(1)">Click</button>
-
     <br>
-    Clicks : <span id="number">0</span>
-    <br>
-    <br>
-    <button type="button" class="btn btn-outline-secondary" id="autoclickButton" onclick="buyAutoclick(1)">Buy Auto Clicker</button>
-    <br>
-    Cost for new Auto Clicker : <span id="autocost">10</span>
-    <br>
-    Current Auto Clickers : <span id="autoclick">0</span>
+    <table class="table table-borderless">
+        <thead>
+          <tr>
+            <th scope="col"><button type="button" class="btn btn-outline-danger btn-lg" id="clickButton" onclick="infect()">Infect</button></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Infected : <span id="infected">0</span></th>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row">Replication : <span id="replication">0</span></th>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"></th>
+            <td colspan="2"></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <script src="/static/mainscrpt.js"></script>
 {% endblock %}
