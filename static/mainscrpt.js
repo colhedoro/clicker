@@ -13,11 +13,17 @@ replication = {
 	total:0,
 },
 
+trPath = {
+    name:'None',
+    upgrades:'',
+}
+
 // Container of all properties.
 properties = {
     virusName: virusName,
     infected: infected,
-    replication: replication
+    replication: replication,
+    trPath: trPath
 };
 
 // Gap between each time the game loop is fired...
@@ -32,6 +38,14 @@ function infect(){
     update();
 }
 
+function transPath(path){
+    if (replication.total >= 5){
+        replication.total -= 5;
+        trPath.name = path;
+        update();
+    }  
+}
+
 ////////// SAVE LOAD //////////
 function save(){
     try{
@@ -39,7 +53,8 @@ function save(){
         properties = {
             virusName: virusName,
             infected: infected,
-            replication: replication
+            replication: replication,
+            trPath: trPath
         };
         clearmsg();
 
@@ -72,6 +87,9 @@ function load(){
         if (typeof savegame.replication !== "undefined") {
             replication = savegame.replication;
         }
+        if (typeof savegame.trPath !== "undefined") {
+            trPath = savegame.trPath;
+        }
 
         // Confirmation message
         clearmsg();
@@ -89,16 +107,19 @@ function load(){
 }
 
 function deleteSave(){
-    try{
-        clearmsg();
-        localStorage.clear();
-        document.getElementById("suc").innerHTML = "Save deleted";
-        msg = setTimeout(function(){document.getElementById("suc").innerHTML = ""}, 1000);
-    }
-    catch(err){
-        clearmsg();
-        document.getElementById("err").innerHTML = "Unable to delete save";
-        msg = setTimeout(function(){document.getElementById("err").innerHTML = ""}, 1000);
+    var confdel = confirm('Really delete save?'); //Check the player really wanted to do that.
+    if(confdel){
+        try{
+            clearmsg();
+            localStorage.clear();
+            document.getElementById("suc").innerHTML = "Save deleted";
+            msg = setTimeout(function(){document.getElementById("suc").innerHTML = ""}, 1000);
+        }
+        catch(err){
+            clearmsg();
+            document.getElementById("err").innerHTML = "Unable to delete save";
+            msg = setTimeout(function(){document.getElementById("err").innerHTML = ""}, 1000);
+        }
     }
 }
 
@@ -109,11 +130,19 @@ function update() {
     document.getElementById('virusName').innerHTML = virusName;
     document.getElementById("infected").innerHTML = format(infected.total);
     document.getElementById("replication").innerHTML = format(replication.total);
+    document.getElementById("pathName").innerHTML = trPath.name;
+
+    if(trPath.name != "None"){
+        document.getElementById('choosePath').style.display = 'none';
+        document.getElementById("transmission").style.display = "block";
+    }
 }
 
 // Prompts player to name the Virus.
 function nameVirus(){
-    virusName = randomName();
+    if (virusName == ""){
+        virusName = randomName();
+    }
 	var n = prompt('Please name your Virus',virusName);
 	if (n != null){
 		virusName = n;

@@ -9,10 +9,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- Boostrap http://getbootstrap.com/docs/4.1/ -->
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+        <link href="/static/lib/bootstrap.css" rel="stylesheet">
+        <script src="/static/lib/jquery.js"></script>
+        <script src="/static/lib/popper.js"></script>
+        <script src="/static/lib/bootstrap.js"></script>
 
         <!-- Custom linked files -->
         <link rel="stylesheet" href="/static/interface.css">
@@ -24,7 +24,7 @@
 
     <body>
 
-        <nav class="navbar navbar-expand-md navbar-light bg-dark border">
+        <nav class="navbar navbar-expand-md navbar-light bg-dark">
             <a class="navbar-brand" href="/"><img src="/static/icon.png" alt="IncreDemic" height="38" width="38"><span class="red"> IncreDemic : </span><span class ="white" id="virusName"></span></a>
             <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar" data-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
@@ -42,11 +42,11 @@
             </div>
         </nav>
 
-        <main class="container p-5">
+        <main class="container p-3">
             {% block main %}{% endblock %}
         </main>
 
-        <footer class="small text-center text-muted">
+        <footer class="small text-center">
             <span id="timedisplay"></span>
         </footer>
 

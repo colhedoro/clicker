@@ -1,10 +1,9 @@
 nav .navbar-brand
 {
-    /* size for brand */
+    /* size for band */
     font-size: xx-large;
     color: #ea433b;
 }
-
 /* colors for band */
 nav .navbar-brand .black
 {
@@ -18,10 +17,24 @@ nav .navbar-brand .white
 {
     color: #e4d7d6;
 }
-
 nav .nav-item
 {
     color: white;
+}
+
+.invisible
+{
+    /* class for things that should be invisible by default.*/
+    display:none;
+}
+
+.table-wrapper {
+    display:inline-flex;
+}
+
+body
+{
+    background-color: #cccccc;
 }
 
 main
