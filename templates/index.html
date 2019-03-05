@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+{% include "modmob.html" %}
     <font id="err" color="#ea433b"></font>
     <font id="suc" color="#4caf50"></font>
     <font id="test"></font>
@@ -31,74 +32,9 @@
                 </table>
               </div>
           </div>
-          <div class="col-sm">
-              <div class="table-responsive">
-                <span id="choosePath">
-                  <table class="table table-light" id="transPath">
-                    <thead>
-                      <tr>
-                        <th colspan="8">Evolution</th>
-                      </tr>
-                      <tr>
-                        <td colspan="8">
-                          Choose Transmission Path (Requires 5 Replication)
-                        </td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><button class="btn btn-outline-danger btn-sm" id="droplet" onclick="transPath('Droplet')">Droplet</button></td>
-                        <td><button class="btn btn-outline-danger btn-sm" id="airborne" onclick="transPath('Airborne')">Airborne</button></td>
-                        <td><button class="btn btn-outline-danger btn-sm" id="vector" onclick="transPath('Vector')">Vector</button></td>
-                        <td><button class="btn btn-outline-danger btn-sm" id="waterborne" onclick="transPath('Waterborne')">Waterborne</button></td>
-                        <td><button class="btn btn-outline-danger btn-sm" id="sitwait" onclick="transPath('Sit and Wait')">Sit and Wait</button></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </span>
-                  <span id="transmission" style="display:none;">
-                    <table class="table table-light" id="transPath">
-                      <thead>
-                        <tr>
-                          <th colspan="8">Evolution : <span id="pathName">None</span></th>
-                        </tr>
-                        <tr>
-                          <td colspan="8">
-                            Upgrade
-                          </td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>2</td>
-                          <td>3</td>
-                          <td>5</td>
-                          <td>1</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                </span>
-              </div>
-          </div>
+          {% include "transmission.html" %}
           <br>
-          <div class="table-responsive">
-            <table class="table table-light">
-              <thead>
-                <tr>
-                  <th colspan="8">Third Column</th>
-                </tr>
-                <tr>
-                  <th colspan="4">2</th>
-                  <th colspan="4">1</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="8">?</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {% include "evolution.html" %}
         </div>
       </div>
 

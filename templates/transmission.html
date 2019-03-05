@@ -1,0 +1,124 @@
+<!--Default Table - choose specialisation-->
+<div class="col-sm">
+    <div class="table-responsive">
+      <span id="choosePath">
+        <table class="table table-light" id="transPath">
+          <thead>
+            <tr>
+              <th colspan="8">Transmission</th>
+            </tr>
+            <tr>
+              <td colspan="8">
+                <font class="small text">Choose Transmission specialisation to spread infection automatically (Requires 2 Replication)</font>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a id="bdroplet" class="btn btn-outline-danger btn-sm" role="button" onclick="transPath('droplet')">Droplet</a></td>
+              <td><a id="bwait" class="btn btn-outline-danger btn-sm" role="button" onclick="transPath('sitwait')">Sit and Wait</a></td>
+              <td><a id="bvector" class="btn btn-outline-danger btn-sm" role="button" onclick="transPath('vector')">Vector</a></td>
+              <td><a id="bcontact" class="btn btn-outline-danger btn-sm" role="button" onclick="transPath('contact')">Contact</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </span>
+
+        <!--Upgrades: Droplet-->
+        <span id="droplet" style="display:none;">
+            <table class="table table-light" id="transPath">
+            <thead>
+                <tr>
+                <th colspan="8">Transmission : Droplet</th>
+                </tr>
+                <tr>
+                <td colspan="8">
+                    Upgrades : <span id="dupgradeList"></span>
+                </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <td><a id="breath" class="btn btn-outline-danger btn-sm" role="button" data-content="Allow the Virus to spread from the host's Breath, increasing risk from Coughing. Costs 5 Replication." rel="popover" data-placement="top" data-trigger="hover" onclick="dropletUpgrade('breath')">Breath</a></td>
+                <td><a id="mucus" class="btn btn-outline-danger btn-sm" role="button" data-content="Allow the Virus to spread from the host's Mucus, increasing risk from Sneezing. Costs 5 Replication." rel="popover" data-placement="top" data-trigger="hover" onclick="dropletUpgrade('mucus')">Mucus</a></td>
+                <td><a id="saliva" class="btn btn-outline-danger btn-sm" role="button" data-content="Allow the Virus to spread from the host's Saliva, making food and drink an infection risk. Costs 25 Replication." data-placement="top" rel="popover" data-trigger="hover" onclick="dropletUpgrade('saliva')">Saliva</a></td>
+                <td></td>
+                </tr>
+            </tbody>
+            </table>
+        </span>
+
+        <!--Upgrades: Sit and Wait-->
+        <span id="sitwait" style="display:none;">
+            <table class="table table-light" id="transPath">
+                <thead>
+                <tr>
+                    <th colspan="8">Transmission : Sit and Wait</th>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        Upgrades : <span id="supgradeList"></span>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><a id="survival1" class="btn btn-outline-danger btn-sm" role="button" data-content="Increases length of time the Virus can survive outside the host, increasing Infectivity. Costs 5 Transmission" rel="popover" data-trigger="hover" onclick="waitUpgrade('survival1')">Survival 1</a></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </span>
+
+        <!--Upgrades: Vector-->
+        <span id="vector" style="display:none;">
+            <table class="table table-light" id="transPath">
+                <thead>
+                <tr>
+                    <th colspan="8">Transmission : Vector</th>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        Upgrades : <span id="vupgradeList"></span>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </span>
+
+        <!--Upgrades: Contact-->
+        <span id="contact" style="display:none;">
+            <table class="table table-light" id="transPath">
+                <thead>
+                <tr>
+                    <th colspan="8">Transmission : Contact</th>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        Upgrades : <span id="cupgradeList"></span>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </span>  
+
+    </div>
+</div>
