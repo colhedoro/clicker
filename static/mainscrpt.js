@@ -61,7 +61,9 @@ trUpgrades = {
     breath: 0,
     saliva: 0,
     // Sit and Wait
-    survival1: 0
+    suspension1: 0,
+    envelope: 0,
+    multiply: 0,
     // Vector
     // Contact
 }
@@ -88,8 +90,12 @@ var msg = setTimeout(function(){}, 0);
 
 // Click on infect button
 function infect(){
-    infected.total += infected.increment;
-    for(var i=0; i < (infected.increment); i++){
+    var increase = infected.increment;
+    infected.total += increase;
+    if (replication.total >= 50){
+        increase /= 10;
+    }
+    for(var i=0; i < (increase); i++){
         randomchance();
     }
     update();
@@ -160,11 +166,26 @@ function dropletUpgrade(upgrade){
 
 // Handle all upgrades for the Sit and Wait path
 function waitUpgrade(upgrade){
-    if (upgrade == 'survival1' && replication.total >= 5 && trUpgrades.survival == 0){
-        listUpgrades.transmission.push(" Survival 1");
-        trUpgrades.survival1 = 1;
+    if (upgrade == 'suspension1' && replication.total >= 5 && trUpgrades.suspension1 == 0){
+        listUpgrades.transmission.push(" Suspension 1");
+        trUpgrades.suspension1 = 1;
         replication.total -= 5;
-        trPath.increment += 0.5;
+        trPath.increment += 0.1;
+        update();
+    }
+    if (upgrade == 'envelope' && replication.total >= 25 && trUpgrades.envelope == 0){
+        listUpgrades.transmission.push(" Non-Enveloped Virus");
+        trUpgrades.envelope = 1;
+        replication.total -= 25;
+        trPath.increment += 0.1;
+        update();
+    }
+    if (upgrade == 'multiply' && replication.total >= 25 && trUpgrades.multiply == 0){
+        listUpgrades.transmission.push(" Multiplication");
+        trUpgrades.multiply = 1;
+        replication.total -= 25;
+        replication.chance += 0.05;
+        trPath.increment += 0.1;
         update();
     }
 }
@@ -250,11 +271,15 @@ function adapUpgrade(upgrade){
     }
     if (upgrade == 'heat1' && replication.total >=10 && infected.total > 100 && adUpgrades.heat1 == 0){
         listUpgrades.adaptation.push(" Heat Resistance 1");
+        replication.total -= 10;
+        infected.total -= 100;
         adUpgrades.heat1 = 1;
         update();
     }
     if (upgrade == 'cold1' && replication.total >=10 && infected.total > 100 && adUpgrades.cold1 == 0){
         listUpgrades.adaptation.push(" Cold Resistance 1");
+        replication.total -= 10;
+        infected.total -= 100;
         adUpgrades.cold1 = 1;
         update();
     }
@@ -342,7 +367,7 @@ function autoInfect(){
         }
         infected.total += increase;
         if (replication.auto == true){
-            for(var i=0; i < (increase / 2); i++){
+            for(var i=0; i < (increase / 5); i++){
                 randomchance();
             }
         }

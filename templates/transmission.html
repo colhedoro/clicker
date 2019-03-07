@@ -33,15 +33,15 @@
                 </tr>
                 <tr>
                 <td colspan="8">
-                    Upgrades : <span id="dupgradeList"></span>
+                    <span id="dupgradeList">None</span>
                 </td>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                <td><a id="breath" class="btn btn-outline-danger btn-sm" role="button" data-content="Allow the Virus to spread from the host's Breath, increasing risk from Coughing. Costs 5 Replication." rel="popover" data-placement="top" data-trigger="hover" onclick="dropletUpgrade('breath')">Breath</a></td>
-                <td><a id="mucus" class="btn btn-outline-danger btn-sm" role="button" data-content="Allow the Virus to spread from the host's Mucus, increasing risk from Sneezing. Costs 5 Replication." rel="popover" data-placement="top" data-trigger="hover" onclick="dropletUpgrade('mucus')">Mucus</a></td>
-                <td><a id="saliva" class="btn btn-outline-danger btn-sm" role="button" data-content="Allow the Virus to spread from the host's Saliva, making food and drink an infection risk. Costs 25 Replication." data-placement="top" rel="popover" data-trigger="hover" onclick="dropletUpgrade('saliva')">Saliva</a></td>
+                <td><a id="breath" class="btn btn-outline-danger btn-sm" role="button" data-content="Allow the Virus to spread from the host's Breath, increasing risk from Coughing. Costs 5 Replication." rel="popover" data-placement="left" data-trigger="hover" onclick="dropletUpgrade('breath')">Breath</a></td>
+                <td><a id="mucus" class="btn btn-outline-danger btn-sm" role="button" data-content="Allow the Virus to spread from the host's Mucus, increasing risk from Sneezing. Costs 5 Replication." rel="popover" data-placement="bottom" data-trigger="hover" onclick="dropletUpgrade('mucus')">Mucus</a></td>
+                <td><a id="saliva" class="btn btn-outline-danger btn-sm" role="button" data-content="Allow the Virus to spread from the host's Saliva, making food and drink an infection risk. Costs 25 Replication." data-placement="bottom" rel="popover" data-trigger="hover" onclick="dropletUpgrade('saliva')">Saliva</a></td>
                 <td></td>
                 </tr>
             </tbody>
@@ -57,15 +57,15 @@
                 </tr>
                 <tr>
                     <td colspan="8">
-                        Upgrades : <span id="supgradeList"></span>
+                        <span id="supgradeList">None</span>
                     </td>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <td><a id="survival1" class="btn btn-outline-danger btn-sm" role="button" data-content="Increases length of time the Virus can survive outside the host, increasing Infectivity. Costs 5 Transmission" rel="popover" data-trigger="hover" onclick="waitUpgrade('survival1')">Survival 1</a></td>
-                    <td></td>
-                    <td></td>
+                    <td><a id="envelope" class="btn btn-outline-danger btn-sm" role="button" data-content="Develops a capsid with no outer lipid membrane, allowing increased survivability. Costs 25 Transmission." rel="popover" data-placement="left" data-trigger="hover" onclick="waitUpgrade('envelope')">Non-enveloped Virus</a></td>
+                    <td><a id="suspension1" class="btn btn-outline-danger btn-sm" role="button" data-content="Virus can suspend itself outside of living host, dormant. Costs 5 Transmission." rel="popover" data-trigger="hover" data-placement="top" onclick="waitUpgrade('suspension1')">Suspension</a></td>
+                    <td><a id="multiply" class="btn btn-outline-danger btn-sm" role="button" data-content="Allows the Virus to replicate even when outside of a host, slightly increasing Replication rate. Costs 25 Transmission." rel="popover" data-placement="left" data-trigger="hover" onclick="waitUpgrade('multiply')">Multiplication</a></td>
                     <td></td>
                 </tr>
                 </tbody>
@@ -81,7 +81,7 @@
                 </tr>
                 <tr>
                     <td colspan="8">
-                        Upgrades : <span id="vupgradeList"></span>
+                        <span id="vupgradeList">None</span>
                     </td>
                 </tr>
                 </thead>
@@ -105,7 +105,7 @@
                 </tr>
                 <tr>
                     <td colspan="8">
-                        Upgrades : <span id="cupgradeList"></span>
+                        <span id="cupgradeList">None</span>
                     </td>
                 </tr>
                 </thead>
