@@ -1,3 +1,3 @@
 ## Click / Tap game
-#Current goal : 
-Create a Clicker game Web App.
+An incremental game with a virus pandemic theme.
+Currently working on a basic prototype that works on desktop as a Web app.

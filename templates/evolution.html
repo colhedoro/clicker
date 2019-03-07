@@ -17,13 +17,13 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="8">Current Symptoms : <span id="sympList">None lfgkhm f lfkhm fdlkg mslfk gmfdl glkdmg </span></td>
+                                <td colspan="8">Current Symptoms : <span id="sympList">None</span></td>
                             </tr>
                             <tr>
-                                <td>Cough</td>
-                                <td>Sneeze</td>
-                                <td>Headache</td>
-                                <td>Nausea</td>
+                                <td><a id="cough" class="btn btn-outline-danger btn-sm" role="button" data-content="Spread the virus by coughing into the surrounding air. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('cough')">Coughing</a></td>
+                                <td><a id="sneeze" class="btn btn-outline-danger btn-sm" role="button" data-content="Sudden expulsion of virus greatly increases infection rate. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('sneeze')">Sneezing</a></td>
+                                <td><a id="headache" class="btn btn-outline-danger btn-sm" role="button" data-content="A mild, but irritating headache decreases victim's productivity. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('headache')">Headache</a></td>
+                                <td><a id="nausea" class="btn btn-outline-danger btn-sm" role="button" data-content="Slight sickness with a minor increase to infectivity. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('nausea')">Nausea</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -42,9 +42,8 @@
                             </tr>
                             <tr>
                                 <td><a id="autoRep" class="btn btn-outline-danger btn-sm" role="button" data-content="The Virus can replicate automatically through transmission. Costs 5 Replication." rel="popover" data-placement="top" data-trigger="hover" onclick="adapUpgrade('autoRep')">Auto Replicate</a></td>
-                                <td>Unlock more Transmission</td>
-                                <td>Unlock more Symptoms</td>
-                                <td>Heat resistance</td>
+                                <td><a id="heat1" class="btn btn-outline-danger btn-sm" role="button" data-content="Strengthen the Virus' resistance to heat, allowing it to infect more. Costs 10 Replication and 100 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="adapUpgrade('heat1')">Heat Resistance</a></td>
+                                <td><a id="cold1" class="btn btn-outline-danger btn-sm" role="button" data-content="Strengthen the Virus' resistance to cold, allowing it to infect more. Costs 10 Replication and 100 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="adapUpgrade('cold1')">Cold Resistance</a></td>
                             </tr>
                         </tbody>
                     </table>

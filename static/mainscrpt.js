@@ -8,7 +8,11 @@ var virusName = "",
 infected = {
 	name:'infected',
 	total:1,
-	increment:1
+    increment:1,
+    virulence: 0,
+    deaths: 0,
+    doctors: 50,
+    multiplier: 1
 },
 
 replication = {
@@ -18,26 +22,37 @@ replication = {
     chance:0.1
 },
 
+listUpgrades = {
+    transmission:[],
+    symptoms:[],
+    adaptation:[]
+}
+
 trPath = {
     name:'None',
-    upgrades:[],
     increment:0
 }
 
 symptoms = {
-    upgrades:[],
     cough: 0,
     sneeze: 0,
     headache: 0,
     nausea: 0
 }
 
+sympCost = {
+    cough: 40,
+    sneeze: 50,
+    headache: 20,
+    nausea: 20,
+}
+
 adUpgrades = {
-    upgrades:[],
     autoRep: 0,
     trans1: 0,
     symp1: 0,
-    heat1: 1
+    heat1: 0,
+    cold1: 0
 }
 
 trUpgrades = {
@@ -56,8 +71,10 @@ properties = {
     virusName: virusName,
     infected: infected,
     replication: replication,
+    listUpgrades: listUpgrades,
     trPath: trPath,
     symptoms: symptoms,
+    sympCost: sympCost,
     adUpgrades: adUpgrades,
     trUpgrades: trUpgrades
 };
@@ -72,7 +89,9 @@ var msg = setTimeout(function(){}, 0);
 // Click on infect button
 function infect(){
     infected.total += infected.increment;
-    randomchance();
+    for(var i=0; i < (infected.increment); i++){
+        randomchance();
+    }
     update();
 }
 
@@ -110,22 +129,28 @@ function transInit(path){
 
 // Handle all upgrades for the Droplet path
 function dropletUpgrade(upgrade){
-    if (upgrade == 'mucus' && replication.total >= 5){
-        trPath.upgrades.push(" Mucus");
+    if (upgrade == 'mucus' && replication.total >= 5 && trUpgrades.mucus == 0){
+        listUpgrades.transmission.push(" Mucus");
         trUpgrades.mucus = 1;
         replication.total -= 5;
         trPath.increment += 2;
+        if (symptoms.sneeze == 1){
+            trPath.increment += 1;
+        }
         update();
     }
-    if (upgrade == 'breath' && replication.total >= 5){
-        trPath.upgrades.push(" Breath");
+    if (upgrade == 'breath' && replication.total >= 5 && trUpgrades.breath == 0){
+        listUpgrades.transmission.push(" Breath");
         trUpgrades.breath = 1;
         replication.total -= 5;
         trPath.increment += 1.5;
+        if (symptoms.cough == 1){
+            trPath.increment += 1;
+        }
         update();
     }
-    if (upgrade == 'saliva' && replication.total >= 25){
-        trPath.upgrades.push(" Saliva");
+    if (upgrade == 'saliva' && replication.total >= 25 && trUpgrades.saliva == 0){
+        listUpgrades.transmission.push(" Saliva");
         trUpgrades.saliva = 1;
         replication.total -= 25;
         trPath.increment += 5;
@@ -135,8 +160,8 @@ function dropletUpgrade(upgrade){
 
 // Handle all upgrades for the Sit and Wait path
 function waitUpgrade(upgrade){
-    if (upgrade == 'survival1' && replication.total >= 5){
-        trPath.upgrades.push(" Survival 1");
+    if (upgrade == 'survival1' && replication.total >= 5 && trUpgrades.survival == 0){
+        listUpgrades.transmission.push(" Survival 1");
         trUpgrades.survival1 = 1;
         replication.total -= 5;
         trPath.increment += 0.5;
@@ -154,17 +179,86 @@ function contactUpgrade(upgrade){
 
 ////////// SYMPTOMS ///////////
 
+function buySymptom(upgrade){
+    // Cough
+    if (upgrade == 'cough' && infected.total > (sympCost.cough) && symptoms.cough == 0){
+        listUpgrades.symptoms.push(" Coughing");
+        symptoms.cough = 1;
+        infected.total -= sympCost.cough;
+        infected.increment += 3;
+        trPath.increment += 1;
+        infected.virulence += 1;
+        if (trUpgrades.breath == 1){
+            trPath.increment += 1;
+        }
+        infected.multiplier += (sympCost.cough / 100);
+        costUpdate();
+        update();
+    }
+
+    // Sneeze
+    if (upgrade == 'sneeze' && infected.total > (sympCost.sneeze) && symptoms.sneeze == 0){
+        listUpgrades.symptoms.push(" Sneezing");
+        symptoms.sneeze = 1;
+        infected.total -= sympCost.sneeze;
+        infected.increment += 5;
+        trPath.increment += 2;
+        infected.virulence += 1;
+        if (trUpgrades.mucus == 1){
+            trPath.increment += 1;
+        }
+        infected.multiplier += (sympCost.sneeze / 100);
+        costUpdate();
+        update();
+    }
+
+    // Headache
+    if (upgrade == 'headache' && infected.total > (sympCost.headache) && symptoms.headache == 0){
+        listUpgrades.symptoms.push(" Headache");
+        symptoms.headache = 1;
+        infected.total -= sympCost.headache;
+        infected.doctors -= 3;
+        infected.virulence += 3;
+        infected.multiplier += (sympCost.headache / 100);
+        costUpdate();
+        update();
+    }
+
+    // Nausea
+    if (upgrade == 'nausea' && infected.total > (sympCost.nausea) && symptoms.nausea == 0){
+        listUpgrades.symptoms.push(" Nausea");
+        symptoms.nausea = 1;
+        infected.total -= sympCost.nausea;
+        infected.increment += 1;
+        trPath.increment += 0.5;
+        infected.virulence += 1;
+        infected.multiplier += (sympCost.nausea / 100);
+        costUpdate();
+        update();
+    }
+}
+
 ////////// ADAPTATIONS ////////
-/* In progress
+
 function adapUpgrade(upgrade){
-    if (upgrade == 'autoRep' && replication.total >= 5){
+    if (upgrade == 'autoRep' && replication.total >= 5 && adUpgrades.autoRep == 0){
+        listUpgrades.adaptation.push(" Auto-Replicate");
         adUpgrades.autoRep = 1;
         replication.total -= 5;
         replication.auto = true;
         update();
     }
+    if (upgrade == 'heat1' && replication.total >=10 && infected.total > 100 && adUpgrades.heat1 == 0){
+        listUpgrades.adaptation.push(" Heat Resistance 1");
+        adUpgrades.heat1 = 1;
+        update();
+    }
+    if (upgrade == 'cold1' && replication.total >=10 && infected.total > 100 && adUpgrades.cold1 == 0){
+        listUpgrades.adaptation.push(" Cold Resistance 1");
+        adUpgrades.cold1 = 1;
+        update();
+    }
 }
-*/
 
 ////////// HELPER FUNCTIONS //////////
 
@@ -175,11 +269,23 @@ function update(){
         document.getElementById("infected").innerHTML = 0;
         loss();
     }
+    // Get the current properties
     document.getElementById('virusName').innerHTML = virusName;
     document.getElementById("infected").innerHTML = format(infected.total);
     document.getElementById("replication").innerHTML = format(replication.total);
+    if(listUpgrades.symptoms.length > 0){
+        document.getElementById("virulence").innerHTML = ("Virulence: " + infected.virulence)
+    }
+
+    // Update the lists of upgrades and display the correct possible upgrades.
     if (trPath.name != "None"){
-        document.getElementById(trPath.name[0] + 'upgradeList').innerHTML = trPath.upgrades;
+        document.getElementById(trPath.name[0] + 'upgradeList').innerHTML = listUpgrades.transmission;
+    }
+    if (listUpgrades.adaptation.length > 0){
+        document.getElementById("adapList").innerHTML = listUpgrades.adaptation;
+    }
+    if (listUpgrades.symptoms.length > 0){
+        document.getElementById("sympList").innerHTML = listUpgrades.symptoms;
     }
     loadButtons()
 }
@@ -195,8 +301,21 @@ function loadButtons(){
             document.getElementById(i).style.display = 'none';
         }
     }
+
+    for (var i in adUpgrades){
+        if (adUpgrades[i] == 1){
+            document.getElementById(i).style.display = 'none';
+        }
+    }
+
+    for (var i in symptoms){
+        if (symptoms[i] == 1){
+            document.getElementById(i).style.display = 'none';
+        }
+    }
 }
 
+// Game lost
 function loss(){
     console.log("Game is lost.");
     confirm('No hosts remain: The Virus has been cured !');
@@ -212,11 +331,39 @@ function loss(){
 
 // Add increments from Transmission
 function autoInfect(){
-    infected.total += trPath.increment;
-    if (replication.auto == true){
-        for(var i=0; i < trPath.increment; i++){
-            randomchance();
+    if(trPath.name != "None"){
+        var increase = trPath.increment;
+        // Slow infection if doesn't have resistances.
+        if (adUpgrades.heat1 == 0 && infected.total > 500){
+            increase /= 100;
         }
+        if (adUpgrades.cold1 == 0 && infected.total > 500){
+            increase /= 100;
+        }
+        infected.total += increase;
+        if (replication.auto == true){
+            for(var i=0; i < (increase / 2); i++){
+                randomchance();
+            }
+        }
+    }
+}
+
+
+// Update costs for each symptom.
+function costUpdate(){
+    for (var symptom in sympCost){
+        // Remove current cost from string
+        var current = document.getElementById(symptom);
+        current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - (" Infected.").length); 
+        var len = String(sympCost[symptom]).length;
+        current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - len);
+        // Calculate new cost
+        sympCost[symptom] *= infected.multiplier;
+        // Update cost to user
+        sympCost[symptom] = Math.round(sympCost[symptom]);
+        current.dataset.content += sympCost[symptom];
+        current.dataset.content += " Infected.";
     }
 }
 
@@ -268,6 +415,7 @@ document.addEventListener("DOMContentLoaded", function(){
         $('#modMob').modal();
     }
     var savedgame = JSON.parse(localStorage.getItem("save"));
+    costUpdate();
     try {
         if (typeof savedgame.infected !== "undefined"){
         load()
@@ -306,8 +454,10 @@ function save(){
             virusName: virusName,
             infected: infected,
             replication: replication,
+            listUpgrades: listUpgrades,
             trPath: trPath,
             symptoms: symptoms,
+            sympCost: sympCost,
             adUpgrades: adUpgrades,
             trUpgrades: trUpgrades
         };
@@ -332,12 +482,6 @@ function load(){
         // Get the save game
         var savegame = JSON.parse(localStorage.getItem("save"));
 
-        for (var i in trUpgrades){
-            if (trUpgrades[i] == 1){
-                document.getElementById(i).style.display = 'none';
-            }
-        }
-
         // Cycle through each property, checking that it exists in the save game, and if it is, loading it.
         if (typeof savegame.virusName !== "undefined"){
             virusName = savegame.virusName
@@ -348,11 +492,17 @@ function load(){
         if (typeof savegame.replication !== "undefined") {
             replication = savegame.replication;
         }
+        if (typeof savegame.listUpgrades !== "undefined") {
+            listUpgrades = savegame.listUpgrades;
+        }
         if (typeof savegame.trPath !== "undefined") {
             trPath = savegame.trPath;
         }
         if (typeof savegame.symptoms !== "undefined"){
             symptoms = savegame.symptoms;
+        }
+        if (typeof savegame.sympCost !== "undefined"){
+            sympCost = savegame.sympCost;
         }
         if (typeof savegame.adUpgrades !== "undefined"){
             adUpgrades = savegame.adUpgrades;
