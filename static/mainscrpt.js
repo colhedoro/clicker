@@ -37,7 +37,11 @@ symptoms = {
     cough: 0,
     sneeze: 0,
     headache: 0,
-    nausea: 0
+    nausea: 0,
+    cyst: 0,
+    pneumonia: 0,
+    migraine: 0,
+    vomit: 0
 }
 
 sympCost = {
@@ -45,6 +49,10 @@ sympCost = {
     sneeze: 50,
     headache: 20,
     nausea: 20,
+    cyst: 40,
+    pneumonia: 80,
+    migraine: 60,
+    vomit: 60
 }
 
 adUpgrades = {
@@ -64,6 +72,7 @@ trUpgrades = {
     suspension1: 0,
     envelope: 0,
     multiply: 0,
+    burst1: 0,
     // Vector
     // Contact
 }
@@ -91,12 +100,16 @@ var msg = setTimeout(function(){}, 0);
 // Click on infect button
 function infect(){
     var increase = infected.increment;
+    increase = checkResistance(increase);
+    if (increase <= 1){
+        increase = 1;
+    }
     infected.total += increase;
     if (replication.total >= 50){
         increase /= 10;
     }
     for(var i=0; i < (increase); i++){
-        randomchance();
+        randomchance(increase);
     }
     update();
 }
@@ -134,21 +147,22 @@ function transInit(path){
 }
 
 // Handle all upgrades for the Droplet path
+// Droplet path is designed as a basic reliable path with lower peaks but works in combination well with symptoms.
 function dropletUpgrade(upgrade){
-    if (upgrade == 'mucus' && replication.total >= 5 && trUpgrades.mucus == 0){
+    if (upgrade == 'mucus' && replication.total >= 10 && trUpgrades.mucus == 0){
         listUpgrades.transmission.push(" Mucus");
         trUpgrades.mucus = 1;
-        replication.total -= 5;
+        replication.total -= 10;
         trPath.increment += 2;
         if (symptoms.sneeze == 1){
             trPath.increment += 1;
         }
         update();
     }
-    if (upgrade == 'breath' && replication.total >= 5 && trUpgrades.breath == 0){
+    if (upgrade == 'breath' && replication.total >= 10 && trUpgrades.breath == 0){
         listUpgrades.transmission.push(" Breath");
         trUpgrades.breath = 1;
-        replication.total -= 5;
+        replication.total -= 10;
         trPath.increment += 1.5;
         if (symptoms.cough == 1){
             trPath.increment += 1;
@@ -160,17 +174,23 @@ function dropletUpgrade(upgrade){
         trUpgrades.saliva = 1;
         replication.total -= 25;
         trPath.increment += 5;
+        if (symptoms.vomit == 1){
+            trPath.increment += 2;
+        }
         update();
     }
 }
 
 // Handle all upgrades for the Sit and Wait path
+// Sit and Wait path is a slow gaining path that has comparitively higher Replication and explodes Infected once certain points have been reached.
 function waitUpgrade(upgrade){
     if (upgrade == 'suspension1' && replication.total >= 5 && trUpgrades.suspension1 == 0){
         listUpgrades.transmission.push(" Suspension 1");
         trUpgrades.suspension1 = 1;
         replication.total -= 5;
+        replication.chance += 0.05;
         trPath.increment += 0.1;
+        unlock("burst1");
         update();
     }
     if (upgrade == 'envelope' && replication.total >= 25 && trUpgrades.envelope == 0){
@@ -178,23 +198,35 @@ function waitUpgrade(upgrade){
         trUpgrades.envelope = 1;
         replication.total -= 25;
         trPath.increment += 0.1;
+        unlock("burst1");
         update();
     }
     if (upgrade == 'multiply' && replication.total >= 25 && trUpgrades.multiply == 0){
         listUpgrades.transmission.push(" Multiplication");
         trUpgrades.multiply = 1;
         replication.total -= 25;
-        replication.chance += 0.05;
+        replication.chance += 0.1;
         trPath.increment += 0.1;
+        unlock("burst1");
+        update();
+    }
+    if (upgrade == 'burst1' && replication.total >= 150 && trUpgrades.burst1 == 0){
+        listUpgrades.transmission.push(" Burst(1)");
+        trUpgrades.burst1 = 1;
+        replication.total -= 150;
+        replication.chance += 0.1;
+        trPath.increment += 15;
         update();
     }
 }
 
 // Handle all upgrades for the Vector path
+// Gambler path - begins similar to Droplet but later higher potential (and risk) from Random Events.
 function vectorUpgrade(upgrade){
 }
 
 // Handle all upgrades for the Contact path
+// A path with lower spread to begin with, but can kill and gain virulence much easier later.
 function contactUpgrade(upgrade){
 }
 
@@ -213,7 +245,7 @@ function buySymptom(upgrade){
             trPath.increment += 1;
         }
         infected.multiplier += (sympCost.cough / 100);
-        costUpdate();
+        costUpdate(infected.multiplier);
         update();
     }
 
@@ -229,7 +261,7 @@ function buySymptom(upgrade){
             trPath.increment += 1;
         }
         infected.multiplier += (sympCost.sneeze / 100);
-        costUpdate();
+        costUpdate(infected.multiplier);
         update();
     }
 
@@ -241,7 +273,7 @@ function buySymptom(upgrade){
         infected.doctors -= 3;
         infected.virulence += 3;
         infected.multiplier += (sympCost.headache / 100);
-        costUpdate();
+        costUpdate(infected.multiplier);
         update();
     }
 
@@ -254,7 +286,69 @@ function buySymptom(upgrade){
         trPath.increment += 0.5;
         infected.virulence += 1;
         infected.multiplier += (sympCost.nausea / 100);
-        costUpdate();
+        costUpdate(infected.multiplier);
+        update();
+    }
+
+    // Cyst
+    if (upgrade == 'cyst' && infected.total > (sympCost.cyst) && symptoms.cyst == 0){
+        listUpgrades.symptoms.push(" Cysts");
+        symptoms.cyst = 1;
+        infected.total -= sympCost.cyst;
+        infected.increment += 2;
+        trPath.increment += 1;
+        infected.virulence += 2;
+        infected.doctors += 1;
+        infected.multiplier += (sympCost.cyst / 100);
+        costUpdate(infected.multiplier);
+        update();
+    }
+
+    // Pneumonia
+    if (upgrade == 'pneumonia' && infected.total > (sympCost.pneumonia) && symptoms.pneumonia == 0){
+        listUpgrades.symptoms.push(" Pneumonia");
+        symptoms.pneumonia = 1;
+        infected.total -= sympCost.pneumonia;
+        infected.increment += 3;
+        if (adUpgrades.cold1 == 1){
+            trPath.increment += 0.75;
+        }
+        trPath.increment += 1;
+        infected.virulence += 2;
+        infected.doctors += 1;
+        infected.multiplier += (sympCost.pneumonia / 100);
+        costUpdate(infected.multiplier);
+        update();
+    }
+
+    // Migraine
+    if (upgrade == 'migraine' && infected.total > (sympCost.migraine) && symptoms.migraine == 0){
+        listUpgrades.symptoms.push(" Migraines");
+        symptoms.migraine = 1;
+        infected.total -= sympCost.migraine;
+        infected.increment += 1;
+        trPath.increment += 0.5;
+        infected.virulence += 4;
+        infected.doctors -= 4;
+        infected.multiplier += (sympCost.migraine / 100);
+        costUpdate(infected.multiplier);
+        update();
+    }
+
+    // Vomit
+    if (upgrade == 'vomit' && infected.total > (sympCost.vomit) && symptoms.vomit == 0){
+        listUpgrades.symptoms.push(" Vomiting");
+        symptoms.vomit = 1;
+        infected.total -= sympCost.vomit;
+        infected.increment += 3;
+        trPath.increment += 1.5;
+        if(trUpgrades.saliva == 1){
+            trPath.increment += 2;
+        }
+        infected.virulence += 1;
+        infected.doctors += 2;
+        infected.multiplier += (sympCost.vomit / 100);
+        costUpdate(infected.multiplier);
         update();
     }
 }
@@ -283,6 +377,11 @@ function adapUpgrade(upgrade){
         adUpgrades.cold1 = 1;
         update();
     }
+    if (upgrade =='symp1' && infected.virulence >= 3 && adUpgrades.symp1 == 0){
+        adUpgrades.symp1 = 1;
+        $("#symps2").show();
+        update();
+    }
 }
 
 ////////// HELPER FUNCTIONS //////////
@@ -299,28 +398,39 @@ function update(){
     document.getElementById("infected").innerHTML = format(infected.total);
     document.getElementById("replication").innerHTML = format(replication.total);
     if(listUpgrades.symptoms.length > 0){
-        document.getElementById("virulence").innerHTML = ("Virulence: " + infected.virulence)
+        document.getElementById("virulence").innerHTML = ("Virulence: " + infected.virulence);
+        document.getElementById('virul').style.display = "inline";
+        document.getElementById('symp1').style.display = "inline";
     }
 
     // Update the lists of upgrades and display the correct possible upgrades.
-    if (trPath.name != "None"){
+    if (trPath.name != "None" && listUpgrades.transmission.length > 0){
         document.getElementById(trPath.name[0] + 'upgradeList').innerHTML = listUpgrades.transmission;
     }
+
     if (listUpgrades.adaptation.length > 0){
         document.getElementById("adapList").innerHTML = listUpgrades.adaptation;
     }
     if (listUpgrades.symptoms.length > 0){
         document.getElementById("sympList").innerHTML = listUpgrades.symptoms;
     }
-    loadButtons()
+    loadButtons();
 }
 
 // Update this function for each added Upgrade
 function loadButtons(){
     if(trPath.name != "None"){
-        document.getElementById('choosePath').style.display = 'none';
+        $("#choosePath").hide();
         document.getElementById(trPath.name).style.display = "block";
     }
+
+    if(adUpgrades.symp1 == 0){
+        $("#symps2").hide();
+    }
+    else{
+        $("#symps2").show();
+    }
+
     for (var i in trUpgrades){
         if (trUpgrades[i] == 1){
             document.getElementById(i).style.display = 'none';
@@ -358,36 +468,59 @@ function loss(){
 function autoInfect(){
     if(trPath.name != "None"){
         var increase = trPath.increment;
-        // Slow infection if doesn't have resistances.
-        if (adUpgrades.heat1 == 0 && infected.total > 500){
-            increase /= 100;
-        }
-        if (adUpgrades.cold1 == 0 && infected.total > 500){
-            increase /= 100;
-        }
+        increase = checkResistance(increase);
         infected.total += increase;
         if (replication.auto == true){
             for(var i=0; i < (increase / 5); i++){
-                randomchance();
+                randomchance(increase);
             }
         }
     }
 }
 
+// Slow infection if doesn't have resistances.
+function checkResistance(incr){
+    // Heat
+    if (adUpgrades.heat1 == 0 && infected.total > 500){
+        incr /= 25;
+    }
+    if (adUpgrades.heat1 == 0 && infected.total > 750){
+        incr /= 50;
+    }
+    if (adUpgrades.heat1 == 0 && infected.total > 1000){
+        incr /= 100;
+    }
+    // Cold
+    if (adUpgrades.cold1 == 0 && infected.total > 500){
+        incr /= 25;
+    }
+    if (adUpgrades.cold1 == 0 && infected.total > 750){
+        incr /= 50;
+    }
+    if (adUpgrades.cold1 == 0 && infected.total > 1000){
+        incr /= 100;
+    }
+    // Medication
+    // None yet
+
+    return incr;
+}
+
 
 // Update costs for each symptom.
-function costUpdate(){
+function costUpdate(multiplier){
     for (var symptom in sympCost){
         // Remove current cost from string
         var current = document.getElementById(symptom);
         current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - (" Infected.").length); 
         var len = String(sympCost[symptom]).length;
-        current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - len);
+        current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - (len));
         // Calculate new cost
-        sympCost[symptom] *= infected.multiplier;
+        sympCost[symptom] *= multiplier;
         // Update cost to user
         sympCost[symptom] = Math.round(sympCost[symptom]);
-        current.dataset.content += sympCost[symptom];
+        current.dataset.content += " ";
+        current.dataset.content += format(sympCost[symptom]);
         current.dataset.content += " Infected.";
     }
 }
@@ -406,10 +539,10 @@ function nameVirus(){
 }
 
 // Random chance (for Replications)
-function randomchance(){
+function randomchance(incr){
     var ran = Math.random();
     if (ran < replication.chance){
-        replication.total += infected.increment;
+        replication.total += incr;
     }
 }
 
@@ -420,12 +553,14 @@ function format(text) {
     return format;
 }
 
+/*
 // Display a clock for user.
 var timerVar = setInterval(myTimer, 1000);
 function myTimer() {
   var d = new Date();
   document.getElementById("timedisplay").innerHTML = d.toLocaleTimeString();
 }
+*/
 
 // Clear messages, if button pressed while a message is already displayed.
 function clearmsg() {
@@ -439,8 +574,11 @@ document.addEventListener("DOMContentLoaded", function(){
     if (isMobile) {
         $('#modMob').modal();
     }
+    update();
+});
+
+$(window).bind("load", function() {
     var savedgame = JSON.parse(localStorage.getItem("save"));
-    costUpdate();
     try {
         if (typeof savedgame.infected !== "undefined"){
         load()
@@ -448,12 +586,13 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
     catch(err){
-        console.log("No save game to load")
+        console.log("No save game to load");
         nameVirus();
         clearmsg();
         document.getElementById("suc").innerHTML = "Patient Zero infected...";
         msg = setTimeout(function(){document.getElementById("suc").innerHTML = ""}, 1000);
     }
+    costUpdate(1);
 });
 
 // Random name generator
@@ -462,6 +601,14 @@ function randomName(){
                     "Mumps","Poliomyelitis","Poliovirus","Rabies","Rabies","Rubella","Shingles","Smallpox","Swine Flu","t-Virus","Zika virus"];
     var res = Math.floor(Math.random() * examples.length);
     return examples[res];
+}
+
+// Unlock new upgrades
+function unlock(input){
+    if(input == "burst1")
+        if(trUpgrades.suspension1 == 1 && trUpgrades.suspension1 == 1 && trUpgrades.multiply == 1){
+            document.getElementById("bBurst1").style.display = "block";
+        }
 }
 
 
@@ -497,6 +644,22 @@ function save(){
         clearmsg();
         document.getElementById("err").innerHTML = "Save failed";
         console.log(err);
+        msg = setTimeout(function(){document.getElementById("err").innerHTML = ""}, 1000);
+    }
+}
+
+function tryload(){
+    try{
+        var savegame = JSON.parse(localStorage.getItem("save"));
+        if (typeof savegame.virusName !== "undefined"){
+            location.reload();
+        }
+    }
+
+    catch(err){
+        console.log("No save game to load");
+        clearmsg();
+        document.getElementById("err").innerHTML = "No save game to load";
         msg = setTimeout(function(){document.getElementById("err").innerHTML = ""}, 1000);
     }
 }

@@ -28,13 +28,33 @@ nav .nav-item
     display:none;
 }
 
-.table-wrapper {
+.popover
+{ 
+    /* fix flickering tooltip issue */
+    pointer-events: none; 
+}
+
+.table-wrapper 
+{
     display:inline-flex;
+}
+
+.table-danger
+{
+    color:#fff;
+    background-color:#424A51;
+}
+
+#err
+{
+    text-shadow: 0px 2px 1px #000000;
 }
 
 body
 {
-    background-color: #D6D8DB;
+    /* image (free license) adapted from https://unsplash.com/photos/WjnF1Tp-p3I */
+    background-image: url('bg.jpg');
+    background-color: #490506;
 }
 
 main
@@ -50,4 +70,9 @@ main img
 {
     /* constrain images on small screens */
     max-width: 100%;
+}
+
+footer
+{
+    color: #d6d8db;
 }
