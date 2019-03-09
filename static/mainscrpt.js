@@ -12,6 +12,7 @@ infected = {
     virulence: 0,
     deaths: 0,
     doctors: 50,
+    incrmultiplier: 1,
     multiplier: 1
 },
 
@@ -57,6 +58,8 @@ sympCost = {
 
 adUpgrades = {
     autoRep: 0,
+    motility: 0,
+    energy: 0,
     trans1: 0,
     symp1: 0,
     heat1: 0,
@@ -99,7 +102,7 @@ var msg = setTimeout(function(){}, 0);
 
 // Click on infect button
 function infect(){
-    var increase = infected.increment;
+    var increase = infected.increment * infected.incrmultiplier;
     increase = checkResistance(increase);
     if (increase <= 1){
         increase = 1;
@@ -153,7 +156,7 @@ function dropletUpgrade(upgrade){
         listUpgrades.transmission.push(" Mucus");
         trUpgrades.mucus = 1;
         replication.total -= 10;
-        trPath.increment += 2;
+        trPath.increment += 6;
         if (symptoms.sneeze == 1){
             trPath.increment += 1;
         }
@@ -163,7 +166,7 @@ function dropletUpgrade(upgrade){
         listUpgrades.transmission.push(" Breath");
         trUpgrades.breath = 1;
         replication.total -= 10;
-        trPath.increment += 1.5;
+        trPath.increment += 4.5;
         if (symptoms.cough == 1){
             trPath.increment += 1;
         }
@@ -173,7 +176,7 @@ function dropletUpgrade(upgrade){
         listUpgrades.transmission.push(" Saliva");
         trUpgrades.saliva = 1;
         replication.total -= 25;
-        trPath.increment += 5;
+        trPath.increment += 15;
         if (symptoms.vomit == 1){
             trPath.increment += 2;
         }
@@ -190,7 +193,9 @@ function waitUpgrade(upgrade){
         replication.total -= 5;
         replication.chance += 0.05;
         trPath.increment += 0.1;
-        unlock("burst1");
+        if(trUpgrades.envelope == 1 && trUpgrades.multiply == 1){
+            $("#bBurst1").show();
+        }
         update();
     }
     if (upgrade == 'envelope' && replication.total >= 25 && trUpgrades.envelope == 0){
@@ -198,7 +203,9 @@ function waitUpgrade(upgrade){
         trUpgrades.envelope = 1;
         replication.total -= 25;
         trPath.increment += 0.1;
-        unlock("burst1");
+        if(trUpgrades.suspension1 == 1 && trUpgrades.multiply == 1){
+            $("#bBurst1").show();
+        }
         update();
     }
     if (upgrade == 'multiply' && replication.total >= 25 && trUpgrades.multiply == 0){
@@ -207,14 +214,21 @@ function waitUpgrade(upgrade){
         replication.total -= 25;
         replication.chance += 0.1;
         trPath.increment += 0.1;
-        unlock("burst1");
+        if(trUpgrades.envelope == 1 && trUpgrades.suspension1 == 1){
+            $("#bBurst1").show();
+        }
         update();
     }
     if (upgrade == 'burst1' && replication.total >= 150 && trUpgrades.burst1 == 0){
         listUpgrades.transmission.push(" Burst(1)");
+        trPath.increment += 200;
+        console.log(replication.chance);
+        replication.chance -= 1;
+        console.log(replication.chance);
+        setTimeout(function(){trPath.increment -= 200; replication.chance += 1;console.log(replication.chance);}, 5000);
         trUpgrades.burst1 = 1;
         replication.total -= 150;
-        replication.chance += 0.1;
+        replication.chance += 0.05;
         trPath.increment += 15;
         update();
     }
@@ -244,7 +258,7 @@ function buySymptom(upgrade){
         if (trUpgrades.breath == 1){
             trPath.increment += 1;
         }
-        infected.multiplier += (sympCost.cough / 100);
+        infected.multiplier = Math.floor(10 * Math.pow(1.1,infected.multiplier))
         costUpdate(infected.multiplier);
         update();
     }
@@ -361,6 +375,22 @@ function adapUpgrade(upgrade){
         adUpgrades.autoRep = 1;
         replication.total -= 5;
         replication.auto = true;
+        $("#motility").show();
+        update();
+    }
+    if (upgrade == 'motility' && infected.total > 150 && infected.virulence >= 5 && adUpgrades.motility == 0){
+        listUpgrades.adaptation.push(" Motility");
+        adUpgrades.motility = 1;
+        infected.total -= 150;
+        infected.incrmultiplier += 1;
+        $("#energy").show();
+        update();
+    }
+    if (upgrade == 'energy' && infected.total > 1000 && infected.virulence >= 10 && adUpgrades.energy == 0){
+        listUpgrades.adaptation.push(" Energy Drain");
+        adUpgrades.energy = 1;
+        infected.total -= 1000;
+        infected.incrmultiplier += 2;
         update();
     }
     if (upgrade == 'heat1' && replication.total >=10 && infected.total > 100 && adUpgrades.heat1 == 0){
@@ -399,8 +429,8 @@ function update(){
     document.getElementById("replication").innerHTML = format(replication.total);
     if(listUpgrades.symptoms.length > 0){
         document.getElementById("virulence").innerHTML = ("Virulence: " + infected.virulence);
-        document.getElementById('virul').style.display = "inline";
-        document.getElementById('symp1').style.display = "inline";
+        document.getElementById("virul").style.display = "inline";
+        document.getElementById("symp1").style.display = "inline";
     }
 
     // Update the lists of upgrades and display the correct possible upgrades.
@@ -422,6 +452,7 @@ function loadButtons(){
     if(trPath.name != "None"){
         $("#choosePath").hide();
         document.getElementById(trPath.name).style.display = "block";
+        $("#"+trPath.name).show();
     }
 
     if(adUpgrades.symp1 == 0){
@@ -431,21 +462,31 @@ function loadButtons(){
         $("#symps2").show();
     }
 
+    if(adUpgrades.autoRep == 1){
+        document.getElementById("motility").style.display = "inline";
+    }
+    if(adUpgrades.motility == 1){
+        document.getElementById("energy").style.display = "inline";
+    }
+    if(trUpgrades.envelope == 1 && trUpgrades.multiply == 1 && trUpgrades.suspension1 == 1){
+        $("#bBurst1").show();
+    }
+
     for (var i in trUpgrades){
         if (trUpgrades[i] == 1){
-            document.getElementById(i).style.display = 'none';
+            $("#"+i).hide();
         }
     }
 
     for (var i in adUpgrades){
         if (adUpgrades[i] == 1){
-            document.getElementById(i).style.display = 'none';
+            $("#"+i).hide();
         }
     }
 
     for (var i in symptoms){
         if (symptoms[i] == 1){
-            document.getElementById(i).style.display = 'none';
+            $("#"+i).hide();
         }
     }
 }
@@ -467,7 +508,7 @@ function loss(){
 // Add increments from Transmission
 function autoInfect(){
     if(trPath.name != "None"){
-        var increase = trPath.increment;
+        var increase = trPath.increment * infected.incrmultiplier;
         increase = checkResistance(increase);
         infected.total += increase;
         if (replication.auto == true){
@@ -512,11 +553,18 @@ function costUpdate(multiplier){
     for (var symptom in sympCost){
         // Remove current cost from string
         var current = document.getElementById(symptom);
-        current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - (" Infected.").length); 
-        var len = String(sympCost[symptom]).length;
-        current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - (len));
+        current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - (" Infected.").length);
+        // If page being reloaded
+        if(current.dataset.content.substr(current.dataset.content.length - 3) == 00){ 
+            current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - 2);
+        }
+        else {
+            var commas = (format(sympCost[symptom]).split(",").length - 1); // Work out the number of commas in order to subtract them from the existing string.
+            var len = String(sympCost[symptom]).length;
+            current.dataset.content = current.dataset.content.substring(0, current.dataset.content.length - (len + commas));
+        }
         // Calculate new cost
-        sympCost[symptom] *= multiplier;
+        sympCost[symptom] = Math.floor(sympCost[symptom] * multiplier);
         // Update cost to user
         sympCost[symptom] = Math.round(sympCost[symptom]);
         current.dataset.content += " ";
@@ -572,6 +620,7 @@ function clearmsg() {
 // Autoload on page refresh
 document.addEventListener("DOMContentLoaded", function(){
     if (isMobile) {
+        window.location.replace("/mobile");
         $('#modMob').modal();
     }
     update();
@@ -601,14 +650,6 @@ function randomName(){
                     "Mumps","Poliomyelitis","Poliovirus","Rabies","Rabies","Rubella","Shingles","Smallpox","Swine Flu","t-Virus","Zika virus"];
     var res = Math.floor(Math.random() * examples.length);
     return examples[res];
-}
-
-// Unlock new upgrades
-function unlock(input){
-    if(input == "burst1")
-        if(trUpgrades.suspension1 == 1 && trUpgrades.suspension1 == 1 && trUpgrades.multiply == 1){
-            document.getElementById("bBurst1").style.display = "block";
-        }
 }
 
 
@@ -671,32 +712,8 @@ function load(){
         var savegame = JSON.parse(localStorage.getItem("save"));
 
         // Cycle through each property, checking that it exists in the save game, and if it is, loading it.
-        if (typeof savegame.virusName !== "undefined"){
-            virusName = savegame.virusName
-        }
-        if (typeof savegame.infected !== "undefined"){
-            infected = savegame.infected
-        }
-        if (typeof savegame.replication !== "undefined") {
-            replication = savegame.replication;
-        }
-        if (typeof savegame.listUpgrades !== "undefined") {
-            listUpgrades = savegame.listUpgrades;
-        }
-        if (typeof savegame.trPath !== "undefined") {
-            trPath = savegame.trPath;
-        }
-        if (typeof savegame.symptoms !== "undefined"){
-            symptoms = savegame.symptoms;
-        }
-        if (typeof savegame.sympCost !== "undefined"){
-            sympCost = savegame.sympCost;
-        }
-        if (typeof savegame.adUpgrades !== "undefined"){
-            adUpgrades = savegame.adUpgrades;
-        }
-        if (typeof savegame.trUpgrades !== "undefined"){
-            trUpgrades = savegame.trUpgrades;
+        for (var property in savegame){
+            window[property] = savegame[property];
         }
 
         // Confirmation message

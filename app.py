@@ -23,5 +23,9 @@ def after_request(response):
 def index():
     return render_template("index.html")
 
+@app.route("/mobile")
+def mobile():
+    return render_template("mobile.html")
+
 if __name__ == '__main__':
     app.run()
