@@ -1,25 +1,10 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
 
-<html lang="en">
+{% block title %}
+    IncreDemic
+{% endblock %}
 
-<head>
-
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Boostrap http://getbootstrap.com/docs/4.1/ -->
-    <link href="/static/lib/bootstrap.css" rel="stylesheet">
-
-    <!-- Custom linked files -->
-    <link rel="stylesheet" href="/static/interface.css">
-    <link rel="shortcut icon" href="/static/icon.ico">
-
-    <title>IncreDemic</title>
-
-</head>
-
-<body>
+{% block main %}
     <div class="container p-3">
         <table class="table table-borderless table-dark">
             <thead>
@@ -29,4 +14,4 @@
             </thead>
         </table>
     </div>
-</body>
+{% endblock %}

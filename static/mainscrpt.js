@@ -61,7 +61,7 @@ adUpgrades = {
     motility: 0,
     energy: 0,
     trans1: 0,
-    symp1: 0,
+    ev1: 0,
     heat1: 0,
     cold1: 0
 }
@@ -80,6 +80,43 @@ trUpgrades = {
     // Contact
 }
 
+visibility = {
+    // List the id of each option, if 1 it is visible and if 0 invisible.
+    // Update each time an option is added.
+    // Basic
+    virul: 0,
+    deaths: 0,
+    // Transmission
+    choosePath: 1,
+    droplet: 0,
+    breath: 1,
+    mucus: 1,
+    saliva: 1,
+    sitwait: 0,
+    envelope: 1,
+    suspension1: 1,
+    multiply: 1,
+    burst1: 0,
+    vector: 0,
+    contact: 0,
+    //Symptom
+    cough: 1,
+    sneeze: 1,
+    headache: 1,
+    nausea: 1,
+    cyst: 0,
+    pneumonia: 0,
+    migraine: 0,
+    vomit: 0,
+    //Adaptation
+    autoRep: 1,
+    heat1: 1,
+    cold1: 1,
+    motility: 0,
+    energy: 0,
+    ev1: 0,
+}
+
 // Container of all properties.
 properties = {
     virusName: virusName,
@@ -90,7 +127,8 @@ properties = {
     symptoms: symptoms,
     sympCost: sympCost,
     adUpgrades: adUpgrades,
-    trUpgrades: trUpgrades
+    trUpgrades: trUpgrades,
+    visibility: visibility
 };
 
 // Gap (in ms) between each time the game loop is fired (Tick rate)...
@@ -133,20 +171,25 @@ function transPath(path){
 function transInit(path){
     if (path == 'droplet'){
         trPath.increment = 1;
+        visibility.droplet = 1;
     }
     else if (path == 'sitwait'){
         trPath.increment = 0.5;
+        visibility.sitwait = 1;
     }
     else if (path == 'vector'){
         trPath.increment = 1;
+        visibility.vector = 1;
     }
     else if (path == 'contact'){
         trPath.increment = 1;
+        visibility.contact = 1;
     }
     else{
         console.log("Unknown transmission type")
         trPath.name = "None";
     }
+    visibility.choosePath = 0;
 }
 
 // Handle all upgrades for the Droplet path
@@ -156,30 +199,33 @@ function dropletUpgrade(upgrade){
         listUpgrades.transmission.push(" Mucus");
         trUpgrades.mucus = 1;
         replication.total -= 10;
-        trPath.increment += 6;
+        trPath.increment += 12;
         if (symptoms.sneeze == 1){
-            trPath.increment += 1;
+            trPath.increment += 5;
         }
+        visibility.mucus = 0;
         update();
     }
     if (upgrade == 'breath' && replication.total >= 10 && trUpgrades.breath == 0){
         listUpgrades.transmission.push(" Breath");
         trUpgrades.breath = 1;
         replication.total -= 10;
-        trPath.increment += 4.5;
+        trPath.increment += 9;
         if (symptoms.cough == 1){
-            trPath.increment += 1;
+            trPath.increment += 5;
         }
+        visibility.breath = 0;
         update();
     }
     if (upgrade == 'saliva' && replication.total >= 25 && trUpgrades.saliva == 0){
         listUpgrades.transmission.push(" Saliva");
         trUpgrades.saliva = 1;
         replication.total -= 25;
-        trPath.increment += 15;
+        trPath.increment += 30;
         if (symptoms.vomit == 1){
-            trPath.increment += 2;
+            trPath.increment += 10;
         }
+        visibility.saliva = 0;
         update();
     }
 }
@@ -194,8 +240,9 @@ function waitUpgrade(upgrade){
         replication.chance += 0.05;
         trPath.increment += 0.1;
         if(trUpgrades.envelope == 1 && trUpgrades.multiply == 1){
-            $("#bBurst1").show();
+            visibility.burst1 = 1;
         }
+        visibility.suspension1 = 0;
         update();
     }
     if (upgrade == 'envelope' && replication.total >= 25 && trUpgrades.envelope == 0){
@@ -204,8 +251,9 @@ function waitUpgrade(upgrade){
         replication.total -= 25;
         trPath.increment += 0.1;
         if(trUpgrades.suspension1 == 1 && trUpgrades.multiply == 1){
-            $("#bBurst1").show();
+            visibility.burst1 = 1;
         }
+        visibility.envelope = 0;
         update();
     }
     if (upgrade == 'multiply' && replication.total >= 25 && trUpgrades.multiply == 0){
@@ -215,21 +263,20 @@ function waitUpgrade(upgrade){
         replication.chance += 0.1;
         trPath.increment += 0.1;
         if(trUpgrades.envelope == 1 && trUpgrades.suspension1 == 1){
-            $("#bBurst1").show();
+            visibility.burst1 = 1;
         }
+        visibility.multiply = 0;
         update();
     }
     if (upgrade == 'burst1' && replication.total >= 150 && trUpgrades.burst1 == 0){
         listUpgrades.transmission.push(" Burst(1)");
         trPath.increment += 200;
-        console.log(replication.chance);
         replication.chance -= 1;
-        console.log(replication.chance);
-        setTimeout(function(){trPath.increment -= 200; replication.chance += 1;console.log(replication.chance);}, 5000);
+        setTimeout(function(){trPath.increment -= 200; replication.chance += 1;}, 5000);
         trUpgrades.burst1 = 1;
         replication.total -= 150;
-        replication.chance += 0.05;
         trPath.increment += 15;
+        visibility.burst1 = 0;
         update();
     }
 }
@@ -249,6 +296,9 @@ function contactUpgrade(upgrade){
 function buySymptom(upgrade){
     // Cough
     if (upgrade == 'cough' && infected.total > (sympCost.cough) && symptoms.cough == 0){
+        if(listUpgrades.symptoms == ""){
+            visibility.ev1 = 1;
+        }
         listUpgrades.symptoms.push(" Coughing");
         symptoms.cough = 1;
         infected.total -= sympCost.cough;
@@ -258,13 +308,17 @@ function buySymptom(upgrade){
         if (trUpgrades.breath == 1){
             trPath.increment += 1;
         }
-        infected.multiplier = Math.floor(10 * Math.pow(1.1,infected.multiplier))
+        infected.multiplier += 0.1;
         costUpdate(infected.multiplier);
+        visibility.cough = 0;
         update();
     }
 
     // Sneeze
     if (upgrade == 'sneeze' && infected.total > (sympCost.sneeze) && symptoms.sneeze == 0){
+        if(listUpgrades.symptoms == ""){
+            visibility.ev1 = 1;
+        }
         listUpgrades.symptoms.push(" Sneezing");
         symptoms.sneeze = 1;
         infected.total -= sympCost.sneeze;
@@ -274,32 +328,41 @@ function buySymptom(upgrade){
         if (trUpgrades.mucus == 1){
             trPath.increment += 1;
         }
-        infected.multiplier += (sympCost.sneeze / 100);
+        infected.multiplier += 0.1;
+        visibility.sneeze = 0;
         costUpdate(infected.multiplier);
         update();
     }
 
     // Headache
     if (upgrade == 'headache' && infected.total > (sympCost.headache) && symptoms.headache == 0){
+        if(listUpgrades.symptoms == ""){
+            visibility.ev1 = 1;
+        }
         listUpgrades.symptoms.push(" Headache");
         symptoms.headache = 1;
         infected.total -= sympCost.headache;
         infected.doctors -= 3;
         infected.virulence += 3;
-        infected.multiplier += (sympCost.headache / 100);
+        infected.multiplier += 0.1;
+        visibility.headache = 0;
         costUpdate(infected.multiplier);
         update();
     }
 
     // Nausea
     if (upgrade == 'nausea' && infected.total > (sympCost.nausea) && symptoms.nausea == 0){
+        if(listUpgrades.symptoms == ""){
+            visibility.ev1 = 1;
+        }
         listUpgrades.symptoms.push(" Nausea");
         symptoms.nausea = 1;
         infected.total -= sympCost.nausea;
         infected.increment += 1;
         trPath.increment += 0.5;
         infected.virulence += 1;
-        infected.multiplier += (sympCost.nausea / 100);
+        infected.multiplier += 0.1;
+        visibility.nausea = 0;
         costUpdate(infected.multiplier);
         update();
     }
@@ -314,6 +377,7 @@ function buySymptom(upgrade){
         infected.virulence += 2;
         infected.doctors += 1;
         infected.multiplier += (sympCost.cyst / 100);
+        visibility.cyst = 0;
         costUpdate(infected.multiplier);
         update();
     }
@@ -331,6 +395,7 @@ function buySymptom(upgrade){
         infected.virulence += 2;
         infected.doctors += 1;
         infected.multiplier += (sympCost.pneumonia / 100);
+        visibility.pneumonia = 0;
         costUpdate(infected.multiplier);
         update();
     }
@@ -345,6 +410,7 @@ function buySymptom(upgrade){
         infected.virulence += 4;
         infected.doctors -= 4;
         infected.multiplier += (sympCost.migraine / 100);
+        visibility.migraine = 0;
         costUpdate(infected.multiplier);
         update();
     }
@@ -362,6 +428,7 @@ function buySymptom(upgrade){
         infected.virulence += 1;
         infected.doctors += 2;
         infected.multiplier += (sympCost.vomit / 100);
+        visibility.vomit = 0;
         costUpdate(infected.multiplier);
         update();
     }
@@ -375,7 +442,8 @@ function adapUpgrade(upgrade){
         adUpgrades.autoRep = 1;
         replication.total -= 5;
         replication.auto = true;
-        $("#motility").show();
+        visibility.motility = 1;
+        visibility.autoRep = 0;
         update();
     }
     if (upgrade == 'motility' && infected.total > 150 && infected.virulence >= 5 && adUpgrades.motility == 0){
@@ -383,7 +451,8 @@ function adapUpgrade(upgrade){
         adUpgrades.motility = 1;
         infected.total -= 150;
         infected.incrmultiplier += 1;
-        $("#energy").show();
+        visibility.energy = 1;
+        visibility.motility = 0;
         update();
     }
     if (upgrade == 'energy' && infected.total > 1000 && infected.virulence >= 10 && adUpgrades.energy == 0){
@@ -391,6 +460,7 @@ function adapUpgrade(upgrade){
         adUpgrades.energy = 1;
         infected.total -= 1000;
         infected.incrmultiplier += 2;
+        visibility.energy = 0;
         update();
     }
     if (upgrade == 'heat1' && replication.total >=10 && infected.total > 100 && adUpgrades.heat1 == 0){
@@ -398,6 +468,7 @@ function adapUpgrade(upgrade){
         replication.total -= 10;
         infected.total -= 100;
         adUpgrades.heat1 = 1;
+        visibility.heat1 = 0;
         update();
     }
     if (upgrade == 'cold1' && replication.total >=10 && infected.total > 100 && adUpgrades.cold1 == 0){
@@ -405,11 +476,13 @@ function adapUpgrade(upgrade){
         replication.total -= 10;
         infected.total -= 100;
         adUpgrades.cold1 = 1;
+        visibility.cold1 = 0;
         update();
     }
-    if (upgrade =='symp1' && infected.virulence >= 3 && adUpgrades.symp1 == 0){
-        adUpgrades.symp1 = 1;
-        $("#symps2").show();
+    if (upgrade =='ev1' && infected.virulence >= 3 && adUpgrades.ev1 == 0){
+        adUpgrades.ev1 = 1;
+        visibility.ev1 = 0;
+        visibility.cyst = visibility.pneumonia = visibility.migraine = visibility.vomit = 1;
         update();
     }
 }
@@ -428,9 +501,9 @@ function update(){
     document.getElementById("infected").innerHTML = format(infected.total);
     document.getElementById("replication").innerHTML = format(replication.total);
     if(listUpgrades.symptoms.length > 0){
+        visibility.virul = 1;
         document.getElementById("virulence").innerHTML = ("Virulence: " + infected.virulence);
-        document.getElementById("virul").style.display = "inline";
-        document.getElementById("symp1").style.display = "inline";
+        $("#virul").show();
     }
 
     // Update the lists of upgrades and display the correct possible upgrades.
@@ -447,46 +520,13 @@ function update(){
     loadButtons();
 }
 
-// Update this function for each added Upgrade
 function loadButtons(){
-    if(trPath.name != "None"){
-        $("#choosePath").hide();
-        document.getElementById(trPath.name).style.display = "block";
-        $("#"+trPath.name).show();
-    }
-
-    if(adUpgrades.symp1 == 0){
-        $("#symps2").hide();
-    }
-    else{
-        $("#symps2").show();
-    }
-
-    if(adUpgrades.autoRep == 1){
-        document.getElementById("motility").style.display = "inline";
-    }
-    if(adUpgrades.motility == 1){
-        document.getElementById("energy").style.display = "inline";
-    }
-    if(trUpgrades.envelope == 1 && trUpgrades.multiply == 1 && trUpgrades.suspension1 == 1){
-        $("#bBurst1").show();
-    }
-
-    for (var i in trUpgrades){
-        if (trUpgrades[i] == 1){
-            $("#"+i).hide();
+    for(element in visibility){
+        if(visibility[element] == 1){
+            $("#" + element).show();
         }
-    }
-
-    for (var i in adUpgrades){
-        if (adUpgrades[i] == 1){
-            $("#"+i).hide();
-        }
-    }
-
-    for (var i in symptoms){
-        if (symptoms[i] == 1){
-            $("#"+i).hide();
+        if(visibility[element] == 0){
+            $("#" + element).hide();
         }
     }
 }
@@ -601,15 +641,6 @@ function format(text) {
     return format;
 }
 
-/*
-// Display a clock for user.
-var timerVar = setInterval(myTimer, 1000);
-function myTimer() {
-  var d = new Date();
-  document.getElementById("timedisplay").innerHTML = d.toLocaleTimeString();
-}
-*/
-
 // Clear messages, if button pressed while a message is already displayed.
 function clearmsg() {
     clearTimeout(msg)
@@ -672,7 +703,8 @@ function save(){
             symptoms: symptoms,
             sympCost: sympCost,
             adUpgrades: adUpgrades,
-            trUpgrades: trUpgrades
+            trUpgrades: trUpgrades,
+            visibility: visibility
         };
         clearmsg();
 
@@ -738,6 +770,7 @@ function deleteSave(){
             clearmsg();
             localStorage.clear();
             document.getElementById("suc").innerHTML = "Save deleted";
+            console.log("Save deleted.");
             msg = setTimeout(function(){document.getElementById("suc").innerHTML = ""}, 1000);
         }
         catch(err){

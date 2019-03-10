@@ -25,11 +25,11 @@
                                 <td><a id="headache" class="btn btn-outline-danger btn-sm" role="button" data-content="A mild, but irritating headache decreases victim's productivity. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('headache')">Headache</a></td>
                                 <td><a id="nausea" class="btn btn-outline-danger btn-sm" role="button" data-content="Slight sickness with a minor increase to infectivity. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('nausea')">Nausea</a></td>
                             </tr>
-                            <tr id="symps2" style="display:none;">
-                                <td><a id="cyst" class="btn btn-outline-danger btn-sm" role="button" data-content="Painful lumps filled with infected pus, which can burst. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('cyst')">Cysts</a></td>
-                                <td><a id="pneumonia" class="btn btn-outline-danger btn-sm" role="button" data-content="Fluid buildup in the lungs make it difficult to breathe, especially in the cold. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('pneumonia')">Pneumonia</a></td>
-                                <td><a id="migraine" class="btn btn-outline-danger btn-sm" role="button" data-content="A severe headache with some sickness reduces productivity and, slightly, infectivity. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('migraine')">Migraine</a></td>
-                                <td><a id="vomit" class="btn btn-outline-danger btn-sm" role="button" data-content="The expulsion of infected bile through projectile vomiting. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('vomit')">Vomiting</a></td>
+                            <tr>
+                                <td><a id="cyst" style="display:none;" class="btn btn-outline-danger btn-sm" role="button" data-content="Painful lumps filled with infected pus, which can burst. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('cyst')">Cysts</a></td>
+                                <td><a id="pneumonia" style="display:none;" class="btn btn-outline-danger btn-sm" role="button" data-content="Fluid buildup in the lungs make it difficult to breathe, especially in the cold. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('pneumonia')">Pneumonia</a></td>
+                                <td><a id="migraine" style="display:none;" class="btn btn-outline-danger btn-sm" role="button" data-content="A severe headache with some sickness reduces productivity and, slightly, infectivity. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('migraine')">Migraine</a></td>
+                                <td><a id="vomit" style="display:none;" class="btn btn-outline-danger btn-sm" role="button" data-content="The expulsion of infected bile through projectile vomiting. Costs 00 Infected." rel="popover" data-placement="top" data-trigger="hover" onclick="buySymptom('vomit')">Vomiting</a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -54,7 +54,7 @@
                             <tr>
                                 <td><span id="motility" style="display:none;"><a id="bMotility" class="btn btn-outline-danger btn-sm" role="button" data-content="Start to move independently. Gives a x2 Viral Multiplier which doubles infection rate. Costs 150 Infected and requires 5 Virulence." rel="popover" data-placement="top" data-trigger="hover" onclick="adapUpgrade('motility')">Motility</a></span></td>
                                 <td><span id="energy" style="display:none;"><a id="bEnergy" class="btn btn-outline-danger btn-sm" role="button" data-content="Virus can take more energy from hosts, boosting reproduction rate. Increases Viral Multiplier by 2. Costs 1000 Infected and requires 10 Virulence." rel="popover" data-placement="top" data-trigger="hover" onclick="adapUpgrade('energy')">Energy Drain</a></span></td>
-                                <td colspan="8"><span id="symp1" style="display:none;"><a id="symptoms2" class="btn btn-outline-danger btn-sm" role="button" data-content="Unlock more symptoms. 3 Virulence Required." rel="popover" data-placement="top" data-trigger="hover" onclick="adapUpgrade('symp1')">Evolve</a></span></td>
+                                <td colspan="8"><a id="ev1" style="display:none;" class="btn btn-outline-danger btn-sm" role="button" data-content="Unlock more symptoms. 3 Virulence Required." rel="popover" data-placement="top" data-trigger="hover" onclick="adapUpgrade('ev1')">Evolve</a></td>
                             </tr>
                         </tbody>
                     </table>

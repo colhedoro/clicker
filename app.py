@@ -21,11 +21,18 @@ def after_request(response):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    gheaders = True
+    return render_template("index.html", gheaders=gheaders)
 
 @app.route("/mobile")
 def mobile():
-    return render_template("mobile.html")
+    gheaders = False
+    return render_template("mobile.html", gheaders=gheaders)
+
+@app.route("/about")
+def about():
+    gheaders = False
+    return render_template("about.html", gheaders=gheaders)
 
 if __name__ == '__main__':
     app.run()
