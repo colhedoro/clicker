@@ -501,12 +501,12 @@ function update(){
         document.getElementById("virulence").innerHTML = ("Virulence: " + infected.virulence);
         $("#virul").show();
     }
-    if(infected.virmultiplier == 1){
+    if(adUpgrades.motility == 0){
         $("#virMultiplier").hide();
     }
-    if(infected.multiplier > 1){
+    else if(adUpgrades.motility == 1){
         $("#virMultiplier").show();
-        document.getElementById("virMultiplierCount").innerHTML = Math.round(infected.multiplier);
+        document.getElementById("virMultiplierCount").innerHTML = Math.round(infected.virmultiplier);
     }
 
     // Update the lists of upgrades and display the correct possible upgrades.
