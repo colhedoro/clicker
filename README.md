@@ -4,7 +4,7 @@ Currently working on a basic prototype that works on desktop as a web app.
 
 # IncreDemic: an Incremental Pandemic
 
-IncreDemic is inspired by games such as *Pandemic* (the flash game) and *Plague Inc.*, as well as incremental games such as *CivClicker* and *AdVenture Capitalist*. This project has an indefinite scope in order to allow me to continue working on it into the future, but my current goal is a working prototype to demonstrate the main concepts. Publishing it to web at this stage also allows any players to provide feedback so I can balance and improve the game better.
+IncreDemic is a project which has an indefinite scope in order to allow me to continue working on it long into the future as a personal project, but my current goal is a working prototype to demonstrate the main concepts. Publishing it to web at this stage also allows any players to provide feedback so I can balance and improve the game better.
 
 The player starts by naming a VIRUS, which can be typed in by the player, but the sample name given is generated from a list of existing, both real and fantasy, viruses. Once this is accepted, the first victim is INFECTED. If the player drops at any point to 0 INFECTED, the game is lost and will have to be either reloaded from the most recent SAVEGAME, or started again.
 In terms of saving and loading, one game can be saved at any point and this SAVEGAME is stored in localstorage. This is loaded by default on opening the game, to restart the game the SAVEGAME must be deleted. In the future I could look at more options of exporting a SAVEGAME so that custom saves can be imported and shared.
@@ -40,10 +40,14 @@ The game is in the early stage of development. The player can choose a TRANSMISS
 There are 2 multipliers available, the first of which is unlocked after AUTO-REPLICATE is unlocked. There is also HEAT and COLD resistance, but no MEDICATION upgrades.
 DOCTORS, DEATHS, and RANDOM EVENTS have not been implemented yet.
 
-Currently, I am working on balancing the calculations for increasing the cost of purchasing SYMPTOMS. Initialising the first upgrades for each TRANSMISSION path. After this, the order of implementation will be: more SYMPTOMS, DEATHS, RANDOM EVENTS, then DOCTORS.
-
 ## Future (TODO)
+Currently, I am working on balancing the calculations for increasing the cost of purchasing SYMPTOMS, although this will continue indefinitely throughout the project's development. Initialising the first upgrades for each TRANSMISSION path. After this, the order of implementation will be: more SYMPTOMS, DEATHS, RANDOM EVENTS, then DOCTORS.
+
+*Further future features:*
+-Exportable save/load functions.
 -A prestiege mechanism: SPORE/PLANETS. Each PLANET (beginning with earth) would have a finite number of potential victims, meaning once all of these have been killed, a new PLANET would need to be infected. This would involve 'Resetting' the game, and the new PLANET would begin with some kind of upgrade or benefit for resetting.
 -Create a version that is compatible with mobile, for web, as well as independent Android and iOS apps. 
--Improved graphics and appearance, potentially these could be customisable. 
--Exportable save/load functions.
+-Improved graphics and appearance, potentially these could be customisable.
+-Along with above: Icons, more appealing UI and buttons, VIRUS animation, a visibile cell that adapts to upgrades to make playthroughs more unique.
+-Improve ticker (Currently, just text that confirms save/load, difficult to read) that could also have 'News' and confirmation of each purchase, etc. Draws more into the game world. This would be important alongside random events.
+-Achievements.

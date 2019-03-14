@@ -1,6 +1,7 @@
 // Init
 $('.btn-sm').popover();
 var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+var version = 0.1;
 
 ////////// PROPERTIES/VARIABLES //////////
 var virusName = "",
@@ -12,8 +13,9 @@ infected = {
     virulence: 0,
     deaths: 0,
     doctors: 50,
-    incrmultiplier: 1,
-    multiplier: 1
+    virmultiplier: 1, // Additive general multiplier from upgrades.
+    incrmultiplier: 1, // Multiplier for infection (Click and auto).
+    multiplier: 1 // Multiplier for cost increase.
 },
 
 replication = {
@@ -81,7 +83,7 @@ trUpgrades = {
 }
 
 visibility = {
-    // List the id of each option, if 1 it is visible and if 0 invisible.
+    // List the id of each option, if 1 it is visible and if 0 invisible. 
     // Update each time an option is added.
     // Basic
     virul: 0,
@@ -140,7 +142,7 @@ var msg = setTimeout(function(){}, 0);
 
 // Click on infect button
 function infect(){
-    var increase = infected.increment * infected.incrmultiplier;
+    var increase = infected.increment * infected.incrmultiplier * infected.virmultiplier;
     increase = checkResistance(increase);
     if (increase <= 1){
         increase = 1;
@@ -308,7 +310,6 @@ function buySymptom(upgrade){
         if (trUpgrades.breath == 1){
             trPath.increment += 1;
         }
-        infected.multiplier += 0.1;
         costUpdate(infected.multiplier);
         visibility.cough = 0;
         update();
@@ -361,7 +362,6 @@ function buySymptom(upgrade){
         infected.increment += 1;
         trPath.increment += 0.5;
         infected.virulence += 1;
-        infected.multiplier += 0.1;
         visibility.nausea = 0;
         costUpdate(infected.multiplier);
         update();
@@ -376,7 +376,6 @@ function buySymptom(upgrade){
         trPath.increment += 1;
         infected.virulence += 2;
         infected.doctors += 1;
-        infected.multiplier += (sympCost.cyst / 100);
         visibility.cyst = 0;
         costUpdate(infected.multiplier);
         update();
@@ -394,7 +393,6 @@ function buySymptom(upgrade){
         trPath.increment += 1;
         infected.virulence += 2;
         infected.doctors += 1;
-        infected.multiplier += (sympCost.pneumonia / 100);
         visibility.pneumonia = 0;
         costUpdate(infected.multiplier);
         update();
@@ -409,7 +407,6 @@ function buySymptom(upgrade){
         trPath.increment += 0.5;
         infected.virulence += 4;
         infected.doctors -= 4;
-        infected.multiplier += (sympCost.migraine / 100);
         visibility.migraine = 0;
         costUpdate(infected.multiplier);
         update();
@@ -427,7 +424,6 @@ function buySymptom(upgrade){
         }
         infected.virulence += 1;
         infected.doctors += 2;
-        infected.multiplier += (sympCost.vomit / 100);
         visibility.vomit = 0;
         costUpdate(infected.multiplier);
         update();
@@ -450,7 +446,7 @@ function adapUpgrade(upgrade){
         listUpgrades.adaptation.push(" Motility");
         adUpgrades.motility = 1;
         infected.total -= 150;
-        infected.incrmultiplier += 1;
+        infected.virmultiplier += 1;
         visibility.energy = 1;
         visibility.motility = 0;
         update();
@@ -459,7 +455,7 @@ function adapUpgrade(upgrade){
         listUpgrades.adaptation.push(" Energy Drain");
         adUpgrades.energy = 1;
         infected.total -= 1000;
-        infected.incrmultiplier += 2;
+        infected.virmultiplier += 2;
         visibility.energy = 0;
         update();
     }
@@ -504,6 +500,13 @@ function update(){
         visibility.virul = 1;
         document.getElementById("virulence").innerHTML = ("Virulence: " + infected.virulence);
         $("#virul").show();
+    }
+    if(infected.virmultiplier == 1){
+        $("#virMultiplier").hide();
+    }
+    if(infected.multiplier > 1){
+        $("#virMultiplier").show();
+        document.getElementById("virMultiplierCount").innerHTML = Math.round(infected.multiplier);
     }
 
     // Update the lists of upgrades and display the correct possible upgrades.
@@ -649,6 +652,7 @@ function clearmsg() {
 }
 
 // Autoload on page refresh
+// Warn for mobile users. Probably keep this after mobile version (/mobile) is implemented.
 document.addEventListener("DOMContentLoaded", function(){
     if (isMobile) {
         window.location.replace("/mobile");
@@ -657,7 +661,8 @@ document.addEventListener("DOMContentLoaded", function(){
     update();
 });
 
-$(window).bind("load", function() {
+// Load save game if there is one, if not, setup a new game.
+window.onload = function() {
     var savedgame = JSON.parse(localStorage.getItem("save"));
     try {
         if (typeof savedgame.infected !== "undefined"){
@@ -673,7 +678,7 @@ $(window).bind("load", function() {
         msg = setTimeout(function(){document.getElementById("suc").innerHTML = ""}, 1000);
     }
     costUpdate(1);
-});
+};
 
 // Random name generator
 function randomName(){

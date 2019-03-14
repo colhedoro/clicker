@@ -9,10 +9,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- Boostrap http://getbootstrap.com/docs/4.1/ -->
-        <link href="/static/lib/bootstrap.css" rel="stylesheet">
-        <script src="/static/lib/jquery.js"></script>
-        <script src="/static/lib/popper.js"></script>
-        <script src="/static/lib/bootstrap.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap.css') }}">
+        <script src="{{ url_for('static', filename='lib/jquery.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/popper.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/bootstrap.js') }}"></script>
 
         <!-- Custom linked files -->
         <link rel="stylesheet" href="/static/interface.css">
@@ -44,6 +44,9 @@
                 {% endif %}
             </div>
         </nav>
+        {% if gheaders %}
+        {% block multip %}{% endblock %}
+        {% endif %}
 
         <main class="container p-3">
             {% block main %}{% endblock %}

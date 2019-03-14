@@ -4,6 +4,10 @@
     IncreDemic
 {% endblock %}
 
+{% block multip %}
+<h3><span id="virMultiplier" class="ml-5 badge badge-dark" style="display:none;">Viral Multiplier: x<span id="virMultiplierCount"></span></span></h3>
+{% endblock %}
+
 {% block main %}
 {% include "modmob.html" %}
     <font id="err" color="#ea433b"></font>
@@ -12,6 +16,7 @@
     <br><br>
 
     <div class="container">
+
         <div class="row">
           <div class="col-sm">
               <div class="table-responsive">
