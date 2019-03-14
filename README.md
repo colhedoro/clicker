@@ -44,10 +44,10 @@ DOCTORS, DEATHS, and RANDOM EVENTS have not been implemented yet.
 Currently, I am working on balancing the calculations for increasing the cost of purchasing SYMPTOMS, although this will continue indefinitely throughout the project's development. Initialising the first upgrades for each TRANSMISSION path. After this, the order of implementation will be: more SYMPTOMS, DEATHS, RANDOM EVENTS, then DOCTORS.
 
 *Further future features:*
--Exportable save/load functions.
--A prestiege mechanism: SPORE/PLANETS. Each PLANET (beginning with earth) would have a finite number of potential victims, meaning once all of these have been killed, a new PLANET would need to be infected. This would involve 'Resetting' the game, and the new PLANET would begin with some kind of upgrade or benefit for resetting.
--Create a version that is compatible with mobile, for web, as well as independent Android and iOS apps. 
--Improved graphics and appearance, potentially these could be customisable.
--Along with above: Icons, more appealing UI and buttons, VIRUS animation, a visibile cell that adapts to upgrades to make playthroughs more unique.
--Improve ticker (Currently, just text that confirms save/load, difficult to read) that could also have 'News' and confirmation of each purchase, etc. Draws more into the game world. This would be important alongside random events.
--Achievements.
+- Exportable save/load functions.
+- A prestiege mechanism: SPORE/PLANETS. Each PLANET (beginning with earth) would have a finite number of potential victims, meaning once all of these have been killed, a new PLANET would need to be infected. This would involve 'Resetting' the game, and the new PLANET would begin with some kind of upgrade or benefit for resetting.
+- Create a version that is compatible with mobile, for web, as well as independent Android and iOS apps. 
+- Improved graphics and appearance, potentially these could be customisable.
+- Along with above: Icons, more appealing UI and buttons, VIRUS animation, a visibile cell that adapts to upgrades to make playthroughs more unique.
+- Improve ticker (Currently, just text that confirms save/load, difficult to read) that could also have 'News' and confirmation of each purchase, etc. Draws more into the game world. This would be important alongside random events.
+- Achievements.
